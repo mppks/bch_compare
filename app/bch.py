@@ -2,10 +2,8 @@ import os
 import urllib.request as ur
 import urllib.parse as up
 import zipfile
-import time
 import csv
-import json
-from flask import Flask, render_template
+
 
 TEMP_DIR = 'tmp'
 BCH_URL = 'http://api.bestchange.ru/info.zip'
@@ -20,7 +18,7 @@ def read_csv(filename):
     return data
 
 
-def get_dch_datafile():
+def get_datafile():
     """Скачиваем архив с данными и распаковываем его"""
     if not os.path.isdir(TEMP_DIR):
         os.mkdir(TEMP_DIR)
@@ -39,7 +37,7 @@ def get_dch_datafile():
     return result
 
 
-def prep_bch_exch_data():
+def exch_data():
     """
     Возвращаем список списков курса обмена с подставленными в него названиями валют и обменников
 
@@ -71,25 +69,17 @@ def prep_bch_exch_data():
         exchanger = exchangers_dict[rate[2]]
         # Валюта отдаем, валюта получаем, название обменника, сколько отдаем, сколько получаем, резерв,
         #    отзывы плохие.хорошие
-        res_rates.append([give, get, exchanger, rate[3], rate[4], rate[5], rate[6]])
+        res_rates.append([give, get, exchanger, rate[3], rate[4], rate[5], rate[6].replace('.', '/')])
 
     return res_rates
 
 
 if __name__ == '__main__':
-    get_dch_datafile()
-    bch_data = prep_bch_exch_data()
+    get_datafile()
+    bch_data = exch_data()
 
     #for row in bch_data:
     #    print(row)
-
-    app = Flask(__name__)
-
-    @app.route('/')
-    def home():
-        return render_template('index.html')
-
-    app.run(port=9999, debug=True)
 
     '''
     quit = True
