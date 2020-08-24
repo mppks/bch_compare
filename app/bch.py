@@ -3,6 +3,7 @@ import urllib.request as ur
 import urllib.parse as up
 import zipfile
 import csv
+import json
 
 
 TEMP_DIR = 'tmp'
@@ -11,7 +12,7 @@ SLEEP_TIME = 10
 
 def read_csv(filename):
     """Возвращаем список списков данных из csv файлов"""
-    with open(filename, 'rt') as fout:
+    with open(filename, 'rt', encoding='cp1251') as fout:
         iter_list = csv.reader(fout, delimiter=';')
         data = [row for row in iter_list]
 
@@ -75,8 +76,9 @@ def exch_data():
 
 
 if __name__ == '__main__':
-    get_datafile()
+    #get_datafile()
     bch_data = exch_data()
+    print(json.dumps(bch_data[0:11], ensure_ascii=False))
 
     #for row in bch_data:
     #    print(row)
